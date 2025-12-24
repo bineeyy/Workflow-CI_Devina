@@ -14,17 +14,17 @@ parser = argparse.ArgumentParser(description="Train RandomForest for Obesity Cla
 parser.add_argument(
     "--data_path",
     type=str,
-    default="obesity_clean.csv",  # default path di MLProject folder
+    default="obesity_clean.csv",
     help="Path ke dataset CSV"
 )
 args = parser.parse_args()
 DATA_PATH = args.data_path
 
 # =====================
-# SET EXPERIMENT
+# MLFLOW CONFIG
 # =====================
-mlflow.set_experiment("Obesity_Classification_RF")
 mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI", "file:./mlruns"))
+mlflow.set_experiment("Obesity_Classification_RF")
 
 # =====================
 # LOAD DATASET
@@ -54,52 +54,44 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # =====================
-# TRAINING & LOGGING
+# TRAINING
 # =====================
-with mlflow.start_run():
+rf_model = RandomForestClassifier(
+    n_estimators=100,
+    max_depth=10,
+    random_state=42
+)
+rf_model.fit(X_train, y_train)
 
-    # =====================
-    # MODEL
-    # =====================
-    rf_model = RandomForestClassifier(
-        n_estimators=100,
-        max_depth=10,
-        random_state=42
-    )
-    rf_model.fit(X_train, y_train)
+# =====================
+# PREDICTION
+# =====================
+y_pred = rf_model.predict(X_test)
 
-    # =====================
-    # PREDICTION
-    # =====================
-    y_pred = rf_model.predict(X_test)
+# =====================
+# METRICS
+# =====================
+acc = accuracy_score(y_test, y_pred)
+prec = precision_score(y_test, y_pred, average="weighted")
+rec = recall_score(y_test, y_pred, average="weighted")
+f1 = f1_score(y_test, y_pred, average="weighted")
 
-    # =====================
-    # METRICS
-    # =====================
-    acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred, average="weighted")
-    rec = recall_score(y_test, y_pred, average="weighted")
-    f1 = f1_score(y_test, y_pred, average="weighted")
+# =====================
+# LOGGING (TANPA start_run)
+# =====================
+mlflow.log_param("model_type", "RandomForest")
+mlflow.log_param("n_estimators", 100)
+mlflow.log_param("max_depth", 10)
+mlflow.log_param("data_path", DATA_PATH)
 
-    # =====================
-    # MANUAL LOGGING
-    # =====================
-    mlflow.log_param("model_type", "RandomForest")
-    mlflow.log_param("n_estimators", 100)
-    mlflow.log_param("max_depth", 10)
-    mlflow.log_param("data_path", DATA_PATH)
+mlflow.log_metric("accuracy", acc)
+mlflow.log_metric("precision", prec)
+mlflow.log_metric("recall", rec)
+mlflow.log_metric("f1_score", f1)
 
-    mlflow.log_metric("accuracy", acc)
-    mlflow.log_metric("precision", prec)
-    mlflow.log_metric("recall", rec)
-    mlflow.log_metric("f1_score", f1)
+mlflow.sklearn.log_model(
+    rf_model,
+    artifact_path="random_forest_model"
+)
 
-    # =====================
-    # LOG MODEL
-    # =====================
-    mlflow.sklearn.log_model(
-        rf_model,
-        artifact_path="random_forest_model"
-    )
-
-    print("Training selesai & logged ke MLflow")
+print("Training selesai & logged ke MLflow")
