@@ -24,7 +24,6 @@ DATA_PATH = args.data_path
 # MLFLOW CONFIG
 # =====================
 mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI", "file:./mlruns"))
-mlflow.set_experiment("Obesity_Classification_RF")
 
 # =====================
 # LOAD DATASET
