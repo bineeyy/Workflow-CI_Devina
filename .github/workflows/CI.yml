@@ -27,7 +27,7 @@ jobs:
 
 
       - name: Run MLflow Project
-        run: mlflow run ./MLProject --env-manager=local
+        run: mlflow run ./MLProject -e main -P data_path=obesity_clean.csv --env-manager=local
 
       - name: Upload artefak model
         uses: actions/upload-artifact@v4  # <-- update dari v3 ke v4
