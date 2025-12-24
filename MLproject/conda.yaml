@@ -1,0 +1,10 @@
+name: obesity_mlflow
+channels:
+  - defaults
+dependencies:
+  - python=3.12.10            
+  - pandas            
+  - scikit-learn      
+  - mlflow            
+  - pip
+

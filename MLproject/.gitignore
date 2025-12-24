@@ -1,0 +1,10 @@
+# Ignore MLflow runs
+membangun_model/mlruns/
+workflow-CI/MLproject/mlruns/
+
+# Ignore data besar / sensitif
+membangun_model/obesity_clean.csv
+
+# Ignore screenshot / file sementara
+membangun_model/*.png
+membangun_model/*.txt
