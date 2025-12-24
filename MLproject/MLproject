@@ -5,5 +5,5 @@ conda_env: conda.yaml
 entry_points:
   main:
     parameters:
-      data_path: {type: str, default="MLProject/obesity_clean.csv"}
+      data_path: {type: str, default="obesity_clean.csv"}
     command: "python modelling.py --data_path {data_path}"
