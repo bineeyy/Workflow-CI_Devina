@@ -24,7 +24,7 @@ DATA_PATH = args.data_path
 # SET EXPERIMENT
 # =====================
 mlflow.set_experiment("Obesity_Classification_RF")
-mlflow.set_tracking_uri("http://127.0.0.1:5000")  # sesuaikan jika pakai server MLflow lokal
+mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI", "file:./mlruns"))
 
 # =====================
 # LOAD DATASET
